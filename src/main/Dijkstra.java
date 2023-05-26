@@ -171,6 +171,59 @@ public class Dijkstra {
         
         return percorso;
     }
+    
+    public Rotta dijkstraMagicV4(Veicolo veicolo) {
+
+        //insieme Q dei nodi da visitare
+        AgglomeratoUrbano nodiDaVisitare = new AgglomeratoUrbano(tabella);
+        int rovinePerduteID = nodiDaVisitare.getAgglomerato().size() - 1;
+        int campoBaseID = 0;
+        double costoCarburante = 0;
+        //double costoCarburanteTot = 0;
+        boolean hoTrovatoLeRovine = false;
+        
+        //cerco le Rovine Perdute e calcolo la distanza avanzando
+        for(int i = 0; !nodiDaVisitare.isVuoto() && !hoTrovatoLeRovine; i++) {
+            Citta c =  getPiuVicinaAlCampo((nodiDaVisitare.getAgglomerato().values()));
+
+            for(int ID: c.getCollegamenti()) {
+            	if(nodiDaVisitare.contieneCitta(ID)) {
+            		Citta versoACuiStoAndando = tabella.getAgglomerato().get(ID);
+            		costoCarburante = tabella.calcolaCostoCarburante(veicolo,c.getID(), ID);
+            		//costoCarburanteTot += costoCarburante;
+            		double calc_dist = c.getDistanzaDalCampo() + costoCarburante;
+
+            		if(calc_dist < versoACuiStoAndando.getDistanzaDalCampo()){
+            			versoACuiStoAndando.setDistanzaDalCampo(calc_dist);
+            			versoACuiStoAndando.setUltimoNodoID(c.getID());
+            		}
+
+            		if(versoACuiStoAndando.getID() == rovinePerduteID){
+            			hoTrovatoLeRovine = true;
+            			break;
+            		}
+            	}
+            }
+
+            nodiDaVisitare.rimuoviCitta(c.getID());
+            i--;
+        }
+
+        //dopo averle trovate torno indietro
+        ArrayList<Integer> percorso = new ArrayList<>();
+        Rotta rotta = new Rotta(veicolo);
+        int cittaInCuiMiTrovoID = rovinePerduteID;
+
+        while(cittaInCuiMiTrovoID != campoBaseID){
+            percorso.add(0,cittaInCuiMiTrovoID);
+            //rotta.addCitta(tabella.getCitta(cittaInCuiMiTrovoID));
+            cittaInCuiMiTrovoID = tabella.getCitta(cittaInCuiMiTrovoID).getUltimoNodoID();
+        }
+
+        percorso.add(0,0);
+        
+        return rotta;
+    }
 
     private Citta getPiuVicinaAlCampo(Collection<Citta> nodiDaVisitare) {
     	Citta cittaPiuVicina = nodiDaVisitare.toArray(new Citta[0])[0];

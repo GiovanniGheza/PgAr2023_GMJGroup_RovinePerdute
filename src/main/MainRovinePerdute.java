@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class MainRovinePerdute {
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello, World!");
 
         AgglomeratoUrbano a = LettoreXML.leggiCitta(".\\data\\PgAr_Map_10000.xml");
 

@@ -14,7 +14,13 @@ public class Citta {
     private int ultimoNodoID = -1;
 
     public Citta() {
-
+    	this.x = 0;
+        this.y = 0;
+        this.h = 0;
+        this.nome = "";
+        this.ID = 0;
+        
+        this.collegamenti = new ArrayList<Integer>();
     }
 
     public Citta(int x, int y, int h, String nome, int ID, ArrayList<Integer> collegamenti) {
@@ -109,6 +115,4 @@ public class Citta {
 		return "[x=" + x + ", y=" + y + ", h=" + h + ", nome=" + nome + ", ID=" + ID + ", collegamenti="
 				+ collegamenti + ", distanzaDalCampo=" + distanzaDalCampo + ", ultimoNodoID=" + ultimoNodoID + "]";
 	}
-    
-    
 }
