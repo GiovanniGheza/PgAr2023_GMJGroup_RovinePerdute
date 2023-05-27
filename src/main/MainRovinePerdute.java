@@ -9,12 +9,12 @@ public class MainRovinePerdute {
 
         Dijkstra d = new Dijkstra(a);
 
-        ArrayList<Integer> ar = d.dijkstraMagicV3(new Metztli());
+        Rotta rottaM = d.dijkstraMagicV4(new Metztli());
 
-        System.out.println(ar.toString());
+        System.out.println(rottaM.toString() + "\n\n");
         
-        ar = d.dijkstraMagicV3(new Tonatiuh());
+        Rotta rottaT = d.dijkstraMagicV4(new Tonatiuh());
 
-        System.out.println(ar.toString());
+        System.out.println(rottaT.toString());
     }
 }

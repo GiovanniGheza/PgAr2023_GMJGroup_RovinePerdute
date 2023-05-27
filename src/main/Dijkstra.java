@@ -194,6 +194,7 @@ public class Dijkstra {
             		double calc_dist = c.getDistanzaDalCampo() + costoCarburante;
 
             		if(calc_dist < versoACuiStoAndando.getDistanzaDalCampo()){
+            			versoACuiStoAndando.setDistanzaDalUltimoNodo(costoCarburante);
             			versoACuiStoAndando.setDistanzaDalCampo(calc_dist);
             			versoACuiStoAndando.setUltimoNodoID(c.getID());
             		}
@@ -216,10 +217,15 @@ public class Dijkstra {
 
         while(cittaInCuiMiTrovoID != campoBaseID){
             percorso.add(0,cittaInCuiMiTrovoID);
-            //rotta.addCitta(tabella.getCitta(cittaInCuiMiTrovoID));
+            
+            //System.out.println(cittaInCuiMiTrovoID  + " " + tabella.getCitta(cittaInCuiMiTrovoID).getDistanzaDalUltimoNodo());
+            
+            rotta.addCittaInCima(tabella.getCitta(cittaInCuiMiTrovoID));
             cittaInCuiMiTrovoID = tabella.getCitta(cittaInCuiMiTrovoID).getUltimoNodoID();
         }
 
+        rotta.addCittaInCima(tabella.getCitta(cittaInCuiMiTrovoID));
+        
         percorso.add(0,0);
         
         return rotta;

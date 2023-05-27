@@ -35,6 +35,7 @@ public class Citta {
         if(ID == 0){
             distanzaDalCampo = 0;
             ultimoNodoID = 0;
+            distanzaDalUltimoNodo = 0;
         }
     }
 
@@ -62,6 +63,10 @@ public class Citta {
         return distanzaDalCampo;
     }
 
+    public double getDistanzaDalUltimoNodo() {
+    	return distanzaDalUltimoNodo;
+    }
+    
     public ArrayList<Integer> getCollegamenti() {
         return collegamenti;
     }
@@ -81,11 +86,16 @@ public class Citta {
         if(ID == 0){
             distanzaDalCampo = 0;
             ultimoNodoID = 0;
+            distanzaDalUltimoNodo = 0;
         }
     }
 
     public void setDistanzaDalCampo(double dist) {
         this.distanzaDalCampo = dist;
+    }
+    
+    public void setDistanzaDalUltimoNodo(double dist) {
+        this.distanzaDalUltimoNodo = dist;
     }
 
     public void setUltimoNodoID(int ID) {
