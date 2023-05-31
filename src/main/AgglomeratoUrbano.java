@@ -3,73 +3,114 @@ package main;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Classe che rappresenta un'insieme di Citta
+ * @author Giovanni Gheza
+ */
 public class AgglomeratoUrbano {
 
-    Map<Integer,Citta> agglomerato = new HashMap<Integer,Citta>();
+	//l'insieme delle citta' come mappa la cui chiave e' l'identificativo della citta'
+	Map<Integer,Citta> agglomerato;
 
-    public AgglomeratoUrbano() {
-    }
+	/**
+	 * Costruttore vuoto
+	 */
+	public AgglomeratoUrbano() {
+		agglomerato = new HashMap<Integer,Citta>();
+	}
 
-    public AgglomeratoUrbano(AgglomeratoUrbano agg) {
-        this.agglomerato = new HashMap<Integer,Citta>(agg.getAgglomerato());
-    }
+	/**
+	 * Costruttore che copia un altro agglomerato urbano
+	 * @param agg - l'agglomerato da copiare
+	 */
+	public AgglomeratoUrbano(AgglomeratoUrbano agg) {
+		this.agglomerato = new HashMap<Integer,Citta>(agg.getAgglomerato());
+	}
 
-    public AgglomeratoUrbano(Citta citta) {
-        agglomerato.put(citta.getID(), citta);
-    }
+	/**
+	 * Costruttore che crea un'agglomerato partendo da una citta'
+	 * @param citta - la citta
+	 */
+	public AgglomeratoUrbano(Citta citta) {
+		agglomerato = new HashMap<Integer,Citta>();
+		agglomerato.put(citta.getID(), citta);
+	}
 
-    public boolean addCitta(Citta citta) {
-        if(agglomerato.containsKey(citta.getID()))
-            return false;
-        
-        for(Citta c: agglomerato.values()){
-            if(c.equals(citta))
-                return false;
-        }
+	/**
+	 * Aggiunge una citta all'agglomerato
+	 * @param citta - citta' da aggiungere
+	 * @return vero se la citta' e' stata aggiunta correttamente, falso se la citta' e' gia' presente
+	 */
+	public boolean addCitta(Citta citta) {
+		if(agglomerato.containsKey(citta.getID()))
+			return false;
 
-            agglomerato.put(citta.getID(), citta);
-        
-        return true;
-    }
-    
-    public void rimuoviCitta(int id) {
-    	agglomerato.remove(id);
-    }
+		for(Citta c: agglomerato.values()){
+			if(c.equals(citta))
+				return false;
+		}
 
-    public Map<Integer, Citta> getAgglomerato() {
-        return agglomerato;
-    }
+		agglomerato.put(citta.getID(), citta);
 
-    public Citta getCitta(int ID) {
-        return agglomerato.get(ID);
-    }
-    
-    public boolean contieneCitta(int id) {
-    	return agglomerato.containsKey(id);
-    }
-    
-    public boolean isVuoto() {
-    	return agglomerato.isEmpty();
-    }
+		return true;
+	}
 
-    public boolean checkPresenzaStrada(int ID1, int ID2) {
-        return agglomerato.get(ID1).haCollegamento(ID2);
-    }
+	/**
+	 * Rimuove la citta scelta
+	 * @param id - l'dentificativo della citta da togliere
+	 */
+	public void rimuoviCitta(int id) {
+		agglomerato.remove(id);
+	}
 
-    public double calcolaDistanza(int ID1, int ID2) {
-        return Math.sqrt(calcolaDifferenzaAltitudine(ID1, ID2) + calcolaDistanzaViaAria(ID1, ID2));
-    }
+	public Map<Integer, Citta> getAgglomerato() {
+		return agglomerato;
+	}
 
-    public double calcolaDistanzaViaAria(int ID1, int ID2) {
-        return Math.sqrt(Math.pow(agglomerato.get(ID1).getX() - agglomerato.get(ID2).getX(), 2)
-                    + Math.pow(agglomerato.get(ID1).getY() - agglomerato.get(ID2).getY(), 2));
-    }
+	/**
+	 * Prende una citta' dato l'id
+	 * @param ID - l'ID della citta'
+	 * @return la citta' in questione
+	 */
+	public Citta getCitta(int ID) {
+		return agglomerato.get(ID);
+	}
 
-    public double calcolaDifferenzaAltitudine(int ID1, int ID2) {
-        return Math.abs(agglomerato.get(ID2).getH() - agglomerato.get(ID1).getH());
-    }
+	/**
+	 * Controlla se l'agglomerato contiene una citta'
+	 * @param id - l'id della citta' 
+	 * @return vero se c'e' la citta', falso altrienti
+	 */
+	public boolean contieneCitta(int id) {
+		return agglomerato.containsKey(id);
+	}
 
-    public double calcolaCostoCarburante(Veicolo v, int ID1, int ID2) {
-        return v.calcolaCostoCarburante(agglomerato.get(ID1), agglomerato.get(ID2));
-    }
+	/**
+	 * controlla se l'agglomerato e' semza citta'
+	 * @return vero se l'agglomerato non contiene citta'
+	 */
+	public boolean isVuoto() {
+		return agglomerato.isEmpty();
+	}
+
+	/**
+	 * Controlla se la prima citta' inserita e' collegata con la seconda
+	 * @param ID1 - l'id della citta' da cui si parte
+	 * @param ID2 - l'id della citta' a cui si arriva
+	 * @return vero se il collegamento e' presente
+	 */
+	public boolean checkPresenzaStrada(int ID1, int ID2) {
+		return agglomerato.get(ID1).isCollegataCon(ID2);
+	}
+
+	/**
+	 * Calcola il costo in carburante del visggiare tra due citta
+	 * @param v - il veicolo con cui si viaggia
+	 * @param ID1 - l'id della citta' da cui si parte
+	 * @param ID2 - l'id della citta' a cui si arriva
+	 * @return il carburante usato
+	 */
+	public double calcolaCostoCarburante(Veicolo v, int ID1, int ID2) {
+		return v.calcolaCostoCarburante(agglomerato.get(ID1), agglomerato.get(ID2));
+	}
 }

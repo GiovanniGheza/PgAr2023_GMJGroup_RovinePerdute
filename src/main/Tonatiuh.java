@@ -1,12 +1,14 @@
 package main;
 
+//Veicolo Tonatiuh
 public class Tonatiuh implements Veicolo{
-    public double calcolaCostoCarburante(Citta citta1, Citta citta2) {
+    private static final String TONATIUH = "Tonatiuh";
+
+	public double calcolaCostoCarburante(Citta citta1, Citta citta2) {
         return Math.abs(citta1.getH() - citta2.getH());
     }
 
-	@Override
 	public String getNomeVeicolo() {
-		return "Tonatiuh";
+		return TONATIUH;
 	}
 }

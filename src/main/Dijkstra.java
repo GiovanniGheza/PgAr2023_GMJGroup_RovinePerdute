@@ -1,270 +1,111 @@
 package main;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class Dijkstra {
 
-    //tabella con i nodi, la loro distanza dall'origine e il nodo da cui provengono
-    AgglomeratoUrbano tabella;
+	//tabella con i nodi, la loro distanza dall'origine e il nodo da cui provengono
+	AgglomeratoUrbano tabella;
 
-    public Dijkstra(AgglomeratoUrbano mappa) {
-        this.tabella = mappa;
-    }
-
-    public void dijkstraMagic() {
-
-        //insieme Q dei nodi da visitare
-        ArrayList<Citta> nodiDaVisitare = new ArrayList<Citta> (tabella.getAgglomerato().values());
-        
-        for(int i = 0; !nodiDaVisitare.isEmpty(); i++) {
-
-            Citta c =  getPiuVicinaAlCampo(nodiDaVisitare);
-
-            for(int ID: c.getCollegamenti()) {
-                Citta versoACuiStoAndando = tabella.getAgglomerato().get(ID);
-                //c.setDistanzaDalCampo(mappa.calcolaDistanza(c.getID(), ID));
-                double calc_dist = c.getDistanzaDalCampo() + tabella.calcolaDistanza(c.getID(), ID);
-
-                if(calc_dist < versoACuiStoAndando.getDistanzaDalCampo()){
-                    versoACuiStoAndando.setDistanzaDalCampo(calc_dist);
-                    versoACuiStoAndando.setUltimoNodoID(c.getID());
-                }
-            }
-            nodiDaVisitare.remove(i);
-        }
-    }
-
-
-    public ArrayList<Integer> dijkstraMagicV1() {
-
-        //insieme Q dei nodi da visitare
-        ArrayList<Citta> nodiDaVisitare = new ArrayList<Citta> (tabella.getAgglomerato().values());
-        int rovinePerduteID = nodiDaVisitare.size() - 1;
-        int campoBaseID = 0;
-        boolean hoTrovatoLeRovine = false;
-        
-        //cerco le Rovine Perdute e calcolo la distanza avanzando
-        for(int i = 0; !nodiDaVisitare.isEmpty() && !hoTrovatoLeRovine; i++) {
-            Citta c =  getPiuVicinaAlCampo(nodiDaVisitare);
-
-            for(int ID: c.getCollegamenti()) {
-                Citta versoACuiStoAndando = tabella.getAgglomerato().get(ID);
-                //c.setDistanzaDalCampo(mappa.calcolaDistanza(c.getID(), ID));
-                double calc_dist = c.getDistanzaDalCampo() + tabella.calcolaDistanza(c.getID(), ID);
-
-                if(calc_dist < versoACuiStoAndando.getDistanzaDalCampo()){
-                    versoACuiStoAndando.setDistanzaDalCampo(calc_dist);
-                    versoACuiStoAndando.setUltimoNodoID(c.getID());
-                }
-
-                if(versoACuiStoAndando.getID() == rovinePerduteID){
-                    hoTrovatoLeRovine = true;
-                    break;
-                }
-            }
-
-            nodiDaVisitare.remove(i);
-        }
-
-        ArrayList<Integer> percorso = new ArrayList<>();
-
-        int cittaInCuiMiTrovoID = rovinePerduteID;
-
-        //dopo averle trovate torno indietro
-        while(cittaInCuiMiTrovoID != campoBaseID){
-            percorso.add(0,cittaInCuiMiTrovoID);
-            cittaInCuiMiTrovoID = tabella.getCitta(cittaInCuiMiTrovoID).getUltimoNodoID();
-        }
-
-        return percorso;
-    }
-
-    public ArrayList<Integer> dijkstraMagicV2(Veicolo veicolo) {
-
-        //insieme Q dei nodi da visitare
-        ArrayList<Citta> nodiDaVisitare = new ArrayList<Citta> (tabella.getAgglomerato().values());
-        int rovinePerduteID = nodiDaVisitare.size() - 1;
-        int campoBaseID = 0;
-        boolean hoTrovatoLeRovine = false;
-        
-        //cerco le Rovine Perdute e calcolo la distanza avanzando
-        for(int i = 0; !nodiDaVisitare.isEmpty() && !hoTrovatoLeRovine; i++) {
-            Citta c =  getPiuVicinaAlCampo(nodiDaVisitare);
-
-            for(int ID: c.getCollegamenti()) {
-                Citta versoACuiStoAndando = tabella.getAgglomerato().get(ID);
-                double calc_dist = c.getDistanzaDalCampo() + tabella.calcolaCostoCarburante(veicolo,c.getID(), ID);
-
-                if(calc_dist < versoACuiStoAndando.getDistanzaDalCampo()){
-                    versoACuiStoAndando.setDistanzaDalCampo(calc_dist);
-                    versoACuiStoAndando.setUltimoNodoID(c.getID());
-                }
-
-                if(versoACuiStoAndando.getID() == rovinePerduteID){
-                    hoTrovatoLeRovine = true;
-                    break;
-                }
-            }
-
-            nodiDaVisitare.remove(i);
-            i--;
-        }
-
-        //dopo averle trovate torno indietro
-        ArrayList<Integer> percorso = new ArrayList<>();
-        int cittaInCuiMiTrovoID = rovinePerduteID;
-
-        while(cittaInCuiMiTrovoID != campoBaseID){
-            percorso.add(0,cittaInCuiMiTrovoID);
-            cittaInCuiMiTrovoID = tabella.getCitta(cittaInCuiMiTrovoID).getUltimoNodoID();
-        }
-
-        percorso.add(0,0);
-        
-        return percorso;
-    }
-    
-    public ArrayList<Integer> dijkstraMagicV3(Veicolo veicolo) {
-
-        //insieme Q dei nodi da visitare
-        AgglomeratoUrbano nodiDaVisitare = new AgglomeratoUrbano(tabella);
-        int rovinePerduteID = nodiDaVisitare.getAgglomerato().size() - 1;
-        int campoBaseID = 0;
-        boolean hoTrovatoLeRovine = false;
-        
-        //cerco le Rovine Perdute e calcolo la distanza avanzando
-        for(int i = 0; !nodiDaVisitare.isVuoto() && !hoTrovatoLeRovine; i++) {
-            Citta c =  getPiuVicinaAlCampo((nodiDaVisitare.getAgglomerato().values()));
-
-            for(int ID: c.getCollegamenti()) {
-            	if(nodiDaVisitare.contieneCitta(ID)) {
-            		Citta versoACuiStoAndando = tabella.getAgglomerato().get(ID);
-            		double calc_dist = c.getDistanzaDalCampo() + tabella.calcolaCostoCarburante(veicolo,c.getID(), ID);
-
-            		if(calc_dist < versoACuiStoAndando.getDistanzaDalCampo()){
-            			versoACuiStoAndando.setDistanzaDalCampo(calc_dist);
-            			versoACuiStoAndando.setUltimoNodoID(c.getID());
-            		}
-
-            		if(versoACuiStoAndando.getID() == rovinePerduteID){
-            			hoTrovatoLeRovine = true;
-            			break;
-            		}
-            	}
-            }
-
-            nodiDaVisitare.rimuoviCitta(c.getID());
-            i--;
-        }
-
-        //dopo averle trovate torno indietro
-        ArrayList<Integer> percorso = new ArrayList<>();
-        int cittaInCuiMiTrovoID = rovinePerduteID;
-
-        while(cittaInCuiMiTrovoID != campoBaseID){
-            percorso.add(0,cittaInCuiMiTrovoID);
-            cittaInCuiMiTrovoID = tabella.getCitta(cittaInCuiMiTrovoID).getUltimoNodoID();
-        }
-
-        percorso.add(0,0);
-        
-        return percorso;
-    }
-    
-    public Rotta dijkstraMagicV4(Veicolo veicolo) {
-
-        //insieme Q dei nodi da visitare
-        AgglomeratoUrbano nodiDaVisitare = new AgglomeratoUrbano(tabella);
-        int rovinePerduteID = nodiDaVisitare.getAgglomerato().size() - 1;
-        int campoBaseID = 0;
-        double costoCarburante = 0;
-        //double costoCarburanteTot = 0;
-        boolean hoTrovatoLeRovine = false;
-        
-        //cerco le Rovine Perdute e calcolo la distanza avanzando
-        for(int i = 0; !nodiDaVisitare.isVuoto() && !hoTrovatoLeRovine; i++) {
-            Citta c =  getPiuVicinaAlCampo((nodiDaVisitare.getAgglomerato().values()));
-
-            for(int ID: c.getCollegamenti()) {
-            	if(nodiDaVisitare.contieneCitta(ID)) {
-            		Citta versoACuiStoAndando = tabella.getAgglomerato().get(ID);
-            		costoCarburante = tabella.calcolaCostoCarburante(veicolo,c.getID(), ID);
-            		//costoCarburanteTot += costoCarburante;
-            		double calc_dist = c.getDistanzaDalCampo() + costoCarburante;
-
-            		if(calc_dist < versoACuiStoAndando.getDistanzaDalCampo()){
-            			versoACuiStoAndando.setDistanzaDalUltimoNodo(costoCarburante);
-            			versoACuiStoAndando.setDistanzaDalCampo(calc_dist);
-            			versoACuiStoAndando.setUltimoNodoID(c.getID());
-            		}
-
-            		if(versoACuiStoAndando.getID() == rovinePerduteID){
-            			hoTrovatoLeRovine = true;
-            			break;
-            		}
-            	}
-            }
-
-            nodiDaVisitare.rimuoviCitta(c.getID());
-            i--;
-        }
-
-        //dopo averle trovate torno indietro
-        ArrayList<Integer> percorso = new ArrayList<>();
-        Rotta rotta = new Rotta(veicolo);
-        int cittaInCuiMiTrovoID = rovinePerduteID;
-
-        while(cittaInCuiMiTrovoID != campoBaseID){
-            percorso.add(0,cittaInCuiMiTrovoID);
-            
-            //System.out.println(cittaInCuiMiTrovoID  + " " + tabella.getCitta(cittaInCuiMiTrovoID).getDistanzaDalUltimoNodo());
-            
-            rotta.addCittaInCima(tabella.getCitta(cittaInCuiMiTrovoID));
-            cittaInCuiMiTrovoID = tabella.getCitta(cittaInCuiMiTrovoID).getUltimoNodoID();
-        }
-
-        rotta.addCittaInCima(tabella.getCitta(cittaInCuiMiTrovoID));
-        
-        percorso.add(0,0);
-        
-        return rotta;
-    }
-
-    private Citta getPiuVicinaAlCampo(Collection<Citta> nodiDaVisitare) {
-    	Citta cittaPiuVicina = nodiDaVisitare.toArray(new Citta[0])[0];
-        double dist = Double.POSITIVE_INFINITY;
-
-        for(Citta c : nodiDaVisitare) {
-            if(c.getDistanzaDalCampo() < dist){
-                cittaPiuVicina = c;
-                dist = cittaPiuVicina.getDistanzaDalCampo();
-            }
-        }
-
-        return cittaPiuVicina;
+	public Dijkstra(AgglomeratoUrbano mappa) {
+		this.tabella = mappa;
 	}
 
-	public ArrayList<Citta> trovaPercorso(int IDiniziale) {
-        for(Citta c: tabella.getAgglomerato().values()) {
-            for(int ID: c.getCollegamenti()) {
-                c.setDistanzaDalCampo(tabella.calcolaDistanza(c.getID(), ID));
-            }
-        }
-        return null;
-    }
+	/**
+	 * Calcola la Rotta piu' corta per raggiungere le Rovine Perdute
+	 * @param veicolo - il veicolo con cui si viaggia
+	 * @return la Rotta per raggiungere le Rovine Perdute
+	 */
+	public Rotta dijkstraMagicV4(Veicolo veicolo) {
 
-    public Citta getPiuVicinaAlCampo(ArrayList<Citta> nodiDaVisitare) {
-        Citta cittaPiuVicina = nodiDaVisitare.get(0);
-        double dist = Double.POSITIVE_INFINITY;
+		//insieme Q dei nodi da visitare
+		AgglomeratoUrbano cittaDaVisitare = new AgglomeratoUrbano(tabella);
+		//le Rovine Perdute sono sempre l'ultima citta' dell'elenco
+		int rovinePerduteID = cittaDaVisitare.getAgglomerato().size() - 1;
+		//il Campo Base e' sempre la prima citta' dell'elenco
+		int campoBaseID = 0;
+		//il costo del carburante tra una citta' e l'altra
+		double costoCarburante = 0;
+		//se ho trovato le rovine
+		boolean hoTrovatoLeRovine = false;
 
-        for(Citta c : nodiDaVisitare) {
-            if(c.getDistanzaDalCampo() < dist){
-                cittaPiuVicina = c;
-                dist = cittaPiuVicina.getDistanzaDalCampo();
-            }
-        }
+		//cerco le Rovine Perdute e calcolo la distanza avanzando
+		//questo e' l'argoritmo di Dijkstra
+		while(!cittaDaVisitare.isVuoto() && !hoTrovatoLeRovine) {
+			//prendo la citta' piu' vicina al campo base, non gia' visitata
+			Citta c =  getPiuVicinaAlCampo((cittaDaVisitare.getAgglomerato().values()));
 
-        return cittaPiuVicina;
-    }
+			//guardo le citta' vicine
+			for(int ID: c.getCollegamenti()) {
+				//se non ho gia' visitato la citta' vicina
+				if(cittaDaVisitare.contieneCitta(ID)) {
+					//sto controllando verso quella citta'
+					Citta cittaCheStoControllando = tabella.getAgglomerato().get(ID);
+					//calcolo quanto mi costa il viaggio
+					costoCarburante = tabella.calcolaCostoCarburante(veicolo,c.getID(), ID);
+					//calcolo la distanza dal campo base
+					double distanzaDalCampo = c.getDistanzaDalCampo() + costoCarburante;
+
+					//se la distanza dal campo calcolata ora e' minore dalla distanza gia' calcolata o quella 
+					//di default la sostituisco e aggiorno
+					if(distanzaDalCampo < cittaCheStoControllando.getDistanzaDalCampo()){
+						cittaCheStoControllando.setDistanzaDalUltimoNodo(costoCarburante);
+						cittaCheStoControllando.setDistanzaDalCampo(distanzaDalCampo);
+						cittaCheStoControllando.setUltimoNodoID(c.getID());
+					}
+
+					//se sono arrivato alle Rovine Perdute e' inutile controllara altre citta che magari non
+					//ho ancora visitato, quindi esco
+					if(cittaCheStoControllando.getID() == rovinePerduteID){
+						hoTrovatoLeRovine = true;
+						break;
+					}
+				}
+			}
+
+			//dopo aver visitato una citta la devo rimuovere dall'insieme delle citta da visitare
+			cittaDaVisitare.rimuoviCitta(c.getID());
+		}
+
+		//dopo aver trovato le Rovine Perdute ripercorro i miei passi per raggiungere il campo base
+		//visto che ogni citta ha l'ID della citta' subito piu' vicina al campo base mi basta seguire
+		//gli ID fino all'origine
+		Rotta rotta = new Rotta(veicolo);
+		//incomincio dalle rovine perdute
+		int cittaInCuiMiTrovoID = rovinePerduteID;
+
+		//finche' non sono al campo base continuo ad avvicinarmi
+		while(cittaInCuiMiTrovoID != campoBaseID){
+			//aggiungo la citta alla rotta, visto che so andando dalla fina all'inizio devo inserire le citta
+			//non in fondo ma in cima alla rotta
+			rotta.addCittaInCima(tabella.getCitta(cittaInCuiMiTrovoID));
+			//torno indietro
+			cittaInCuiMiTrovoID = tabella.getCitta(cittaInCuiMiTrovoID).getUltimaCittaID();
+		}
+
+		//aggiungo il campo base visto che esco dal ciclo prima di poterlo inserire
+		rotta.addCittaInCima(tabella.getCitta(cittaInCuiMiTrovoID));
+
+		//ritorno alla rotta
+		return rotta;
+	}
+
+	/**
+	 * Metodo che trova in un gruppo di citta' la piu' vicina al campo
+	 * @param cittaDaVisitare - le citta' da controllare
+	 * @return la Citta piu' vicina
+	 */
+	private Citta getPiuVicinaAlCampo(Collection<Citta> cittaDaVisitare) {
+		Citta cittaPiuVicina = cittaDaVisitare.toArray(new Citta[0])[0];
+		double dist = Double.POSITIVE_INFINITY;
+
+		for(Citta c : cittaDaVisitare) {
+			if(c.getDistanzaDalCampo() < dist){
+				cittaPiuVicina = c;
+				dist = cittaPiuVicina.getDistanzaDalCampo();
+			}
+		}
+
+		return cittaPiuVicina;
+	}
 }
