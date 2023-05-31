@@ -4,11 +4,16 @@ import java.util.Collection;
 
 public class Dijkstra {
 
-	//tabella con i nodi, la loro distanza dall'origine e il nodo da cui provengono
-	AgglomeratoUrbano tabella;
+	//la mappa delle Ande o forse delle Alpi?
+	//la mappa che contiene tutte le citta'
+	AgglomeratoUrbano mappa;
 
+	/**
+	 * Costruttore
+	 * @param mappa - la mappa su cui ci si sposta
+	 */
 	public Dijkstra(AgglomeratoUrbano mappa) {
-		this.tabella = mappa;
+		this.mappa = mappa;
 	}
 
 	/**
@@ -16,8 +21,10 @@ public class Dijkstra {
 	 * @param veicolo - il veicolo con cui si viaggia
 	 * @return la Rotta per raggiungere le Rovine Perdute
 	 */
-	public Rotta dijkstraMagicV4(Veicolo veicolo) {
+	public Rotta dijkstraMagic(Veicolo veicolo) {
 
+		//tabella con i nodi, la loro distanza dall'origine e il nodo da cui provengono
+		AgglomeratoUrbano tabella = new AgglomeratoUrbano(mappa);
 		//insieme Q dei nodi da visitare
 		AgglomeratoUrbano cittaDaVisitare = new AgglomeratoUrbano(tabella);
 		//le Rovine Perdute sono sempre l'ultima citta' dell'elenco

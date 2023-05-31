@@ -2,7 +2,7 @@ package main;
 
 public class MainRovinePerdute {
     public static void main(String[] args) throws Exception {
-
+    	
     	//lettura dati
     	System.out.println("Lettura Dati...");
         AgglomeratoUrbano a = LettoreXML.leggiCitta(".\\data\\PgAr_Map_10000.xml");
@@ -13,12 +13,12 @@ public class MainRovinePerdute {
 
         //calcolo la rotta della Metztli
         System.out.println("Calcolo Rotta Metztli...");
-        Rotta rottaM = d.dijkstraMagicV4(new Metztli());
+        Rotta rottaM = d.dijkstraMagic(new Metztli());
         System.out.println("Rotta Metztli Calcolata!\n");
         
         //calcolo la rotta della Tonatiuh
         System.out.println("Calcolo Rotta Tonatiuh...");
-        Rotta rottaT = d.dijkstraMagicV4(new Tonatiuh());
+        Rotta rottaT = d.dijkstraMagic(new Tonatiuh());
         System.out.println("Rotta Tonatiuh Calcolata!\n");
         
         //scrivo i dati nel file di output
